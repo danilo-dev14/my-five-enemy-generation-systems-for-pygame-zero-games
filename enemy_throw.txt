@@ -1,0 +1,66 @@
+import random
+
+# --- Configurações Iniciais ---
+# Pygame Zero define automaticamente WIDTH e HEIGHT
+WIDTH = 800
+HEIGHT = 600
+
+# Lista para armazenar todos os inimigos ativos
+enemies = []
+# Variável para controlar o tempo entre gerações (em frames ou ticks)
+spawn_timer = 0
+SPAWN_INTERVAL = 60  # Gera um inimigo a cada 60 frames (1 segundo se FPS for 60)
+ENEMY_SPEED = 3
+
+# --- 1. Geração e Movimento do Inimigo ---
+
+def create_enemy():
+    """Cria um novo inimigo em uma posição Y aleatória e o adiciona à lista."""
+    
+    # x: Sempre começa fora da borda direita da tela (WIDTH + 50)
+    start_x = WIDTH + 50
+    
+    # y: Posição Y aleatória dentro da tela
+    start_y = random.randint(0, HEIGHT)
+
+    # Pygame Zero usa a classe Actor
+    # Neste exemplo, estamos assumindo que você tem uma imagem chamada 'enemy.png'
+    # Se não tiver uma imagem, substitua por 'box' e ele será um retângulo simples.
+    new_enemy = Actor('box', (start_x, start_y)) 
+    
+    enemies.append(new_enemy)
+
+# --- 2. Funções Nativas do Pygame Zero ---
+
+def update():
+    """Chamado automaticamente em cada frame para atualizar a lógica do jogo."""
+    global spawn_timer
+    
+    # Lógica do Spawner
+    spawn_timer += 1
+    if spawn_timer >= SPAWN_INTERVAL:
+        create_enemy()
+        spawn_timer = 0
+        
+    # Movimento e Remoção dos Inimigos
+    enemies_to_remove = []
+    
+    for enemy in enemies:
+        # Move para a esquerda
+        enemy.x -= ENEMY_SPEED
+        
+        # Marca para remoção se sair da tela (X < -50)
+        if enemy.right < 0:
+            enemies_to_remove.append(enemy)
+
+    # Remove os inimigos que saíram da tela
+    for enemy in enemies_to_remove:
+        enemies.remove(enemy)
+
+def draw():
+    """Chamado automaticamente em cada frame para desenhar na tela."""
+    screen.clear() # Limpa a tela (preenche com a cor de fundo padrão)
+    
+    # Desenha todos os inimigos
+    for enemy in enemies:
+        enemy.draw()

@@ -1,0 +1,63 @@
+import pgzrun
+import random
+
+# Configurações da janela
+WIDTH = 800
+HEIGHT = 600
+TITLE = "Inimigos Diagonais"
+
+# Lista para armazenar os inimigos
+inimigos = []
+VELOCIDADE_INICIAL = 2
+FATOR_AUMENTO_VELOCIDADE = 0.1
+
+class Inimigo(Actor):
+    def __init__(self, imagem, x, y, vel_x, vel_y):
+        super().__init__(imagem, (x, y))
+        self.vel_x = vel_x
+        self.vel_y = vel_y
+        self.velocidade_base = VELOCIDADE_INICIAL
+
+    def update(self):
+        # Move o inimigo
+        self.x += self.vel_x * self.velocidade_base
+        self.y += self.vel_y * self.velocidade_base
+
+        # Verifica colisão com as bordas e inverte a direção (efeito tabela/bounce)
+        if self.left < 0 or self.right > WIDTH:
+            self.vel_x = -self.vel_x
+            self.aumentar_velocidade()
+        if self.top < 0 or self.bottom > HEIGHT:
+            self.vel_y = -self.vel_y
+            self.aumentar_velocidade()
+
+    def aumentar_velocidade(self):
+        # Aumenta a velocidade base a cada colisão com a borda
+        self.velocidade_base += FATOR_AUMENTO_VELOCIDADE
+        # Opcional: Limitar velocidade máxima, se necessário
+
+def draw():
+    screen.clear()
+    for inimigo in inimigos:
+        inimigo.draw()
+
+def update():
+    for inimigo in inimigos:
+        inimigo.update()
+
+def criar_inimigo():
+    # Define a posição inicial e a direção aleatoriamente
+    x = random.randint(50, WIDTH - 50)
+    y = random.randint(50, HEIGHT - 50)
+    vel_x = random.choice([-1, 1])
+    vel_y = random.choice([-1, 1])
+    novo_inimigo = Inimigo('inimigo_sprite', x, y, vel_x, vel_y) # Substitua 'inimigo_sprite' pelo nome do seu arquivo de imagem
+    inimigos.append(novo_inimigo)
+
+# Cria um inimigo inicial
+criar_inimigo()
+# Opcional: Agendar a criação de mais inimigos
+# clock.schedule_interval(criar_inimigo, 5.0)
+
+pgzrun.go()
+

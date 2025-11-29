@@ -1,0 +1,58 @@
+import pgzrun
+import random
+
+# --- ⚙️ Configurações do Jogo ---
+
+# Definicoes da tela
+WIDTH = 800
+HEIGHT = 600
+
+# Lista para armazenar os inimigos (Actors)
+enemies = []
+
+# Numero maximo de inimigos (garante que nao tera mais que 10)
+MAX_ENEMIES = 10 
+
+# --- 🚀 Funções Principais ---
+
+def create_enemies(count):
+    """
+    Gera o numero especificado de inimigos (no maximo MAX_ENEMIES) 
+    em posicoes aleatorias.
+    """
+    # Limita a contagem para garantir que nao ultrapasse o maximo
+    if count > MAX_ENEMIES:
+        count = MAX_ENEMIES
+    
+    for _ in range(count):
+        # Cria um Actor. A string 'enemy' e o nome do arquivo de imagem.
+        # CERTIFIQUE-SE DE TER UM ARQUIVO CHAMADO 'enemy.png' na pasta 'images'
+        enemy = Actor('enemy') 
+        
+        # Define uma posicao x e y aleatoria dentro dos limites da tela
+        # Os inimigos serao IMÓVEIS, pois nao ha codigo para atualiza-los (update)
+        enemy.x = random.randint(enemy.width // 2, WIDTH - enemy.width // 2)
+        enemy.y = random.randint(enemy.height // 2, HEIGHT - enemy.height // 2)
+        
+        enemies.append(enemy)
+
+# --- 🖼️ Funções de Desenho e Atualização ---
+
+def draw():
+    """
+    Funcao de desenho chamada automaticamente pelo Pygame Zero para 
+    renderizar os elementos.
+    """
+    screen.clear() # Limpa a tela a cada frame
+    for enemy in enemies:
+        enemy.draw() # Desenha cada inimigo na sua posicao aleatoria
+
+# Nao e necessaria uma funcao 'update()' pois os inimigos sao imoveis.
+
+# --- 🕹️ Inicialização do Jogo ---
+
+# Chama a funcao para criar o numero desejado de inimigos (por exemplo, 7)
+# O limite de 10 e garantido dentro da funcao create_enemies.
+create_enemies(7) 
+
+pgzrun.go()

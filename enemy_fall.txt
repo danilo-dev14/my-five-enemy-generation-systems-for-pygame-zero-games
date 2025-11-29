@@ -1,0 +1,31 @@
+import pgzrun
+import random
+
+WIDTH = 800
+HEIGHT = 600
+
+inimigos = []
+
+def criar_inimigo():
+    inimigo = Actor('enemy') # Garanta que 'enemy.png' esteja na pasta 'images'
+    inimigo.x = random.randint(0, WIDTH)
+    inimigo.y = -50
+    inimigos.append(inimigo)
+
+def update():
+    for inimigo in list(inimigos):
+        inimigo.y += 2
+        if inimigo.y > HEIGHT:
+            inimigos.remove(inimigo)
+
+def draw():
+    screen.clear()
+    for inimigo in inimigos:
+        inimigo.draw()
+
+def on_started():
+    clock.schedule_interval(criar_inimigo, 1.0) # Cria um inimigo a cada segundo
+
+on_started()
+pgzrun.go()
+
